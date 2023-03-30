@@ -12,52 +12,52 @@ resource "aws_cloudfront_distribution" "cdf" {
   wait_for_deployment = var.wait_for_deployment
 
   default_cache_behavior {
-    allowed_methods             = var.allowed_methods
-    cached_methods              = var.cached_methods
-    compress                    = var.compress
-    default_ttl                 = var.default_ttl
-    field_level_encryption_id   = var.field_level_encryption_id
-    max_ttl                     = var.max_ttl
-    min_ttl                     = var.min_ttl
-    smooth_streaming            = var.smooth_streaming
-    target_origin_id            = var.target_origin_id
-    trusted_signers             = var.trusted_signers
-    viewer_protocol_policy      = var.viewer_protocol_policy
+    allowed_methods           = var.allowed_methods
+    cached_methods            = var.cached_methods
+    compress                  = var.compress
+    default_ttl               = var.default_ttl
+    field_level_encryption_id = var.field_level_encryption_id
+    max_ttl                   = var.max_ttl
+    min_ttl                   = var.min_ttl
+    smooth_streaming          = var.smooth_streaming
+    target_origin_id          = var.target_origin_id
+    trusted_signers           = var.trusted_signers
+    viewer_protocol_policy    = var.viewer_protocol_policy
 
     forwarded_values {
       cookies {
-        forward                 = var.forward
-        whitelisted_names       = var.whitelisted_names
+        forward           = var.forward
+        whitelisted_names = var.whitelisted_names
       }
-      headers                   = var.headers
-      query_string              = var.query_string
-      query_string_cache_keys   = var.query_string_cache_keys
+      headers                 = var.headers
+      query_string            = var.query_string
+      query_string_cache_keys = var.query_string_cache_keys
     }
   }
 
   dynamic "ordered_cache_behavior" {
     for_each = var.ordered_cache_behavior
     content {
-      allowed_methods             = ordered_cache_behavior.value["allowed_methods"]
-      cached_methods              = ordered_cache_behavior.value["cached_methods"]
-      compress                    = lookup(ordered_cache_behavior.value, "compress", null)
-      default_ttl                 = lookup(ordered_cache_behavior.value, "default_ttl", null)
-      field_level_encryption_id   = lookup(ordered_cache_behavior.value, "field_level_encryption_id", null)
-      max_ttl                     = lookup(ordered_cache_behavior.value, "max_ttl", null)
-      min_ttl                     = lookup(ordered_cache_behavior.value, "min_ttl", null)
-      path_pattern                = ordered_cache_behavior.value["path_pattern"]
-      smooth_streaming            = lookup(ordered_cache_behavior.value, "smooth_streaming", null)
-      target_origin_id            = ordered_cache_behavior.value["target_origin_id"]
-      trusted_signers             = lookup(ordered_cache_behavior.value, "trusted_signers", null)
-      viewer_protocol_policy      = ordered_cache_behavior.value["viewer_protocol_policy"]
+      allowed_methods           = ordered_cache_behavior.value["allowed_methods"]
+      cached_methods            = ordered_cache_behavior.value["cached_methods"]
+      compress                  = lookup(ordered_cache_behavior.value, "compress", null)
+      default_ttl               = lookup(ordered_cache_behavior.value, "default_ttl", null)
+      field_level_encryption_id = lookup(ordered_cache_behavior.value, "field_level_encryption_id", null)
+      max_ttl                   = lookup(ordered_cache_behavior.value, "max_ttl", null)
+      min_ttl                   = lookup(ordered_cache_behavior.value, "min_ttl", null)
+      path_pattern              = ordered_cache_behavior.value["path_pattern"]
+      smooth_streaming          = lookup(ordered_cache_behavior.value, "smooth_streaming", null)
+      target_origin_id          = ordered_cache_behavior.value["target_origin_id"]
+      trusted_signers           = lookup(ordered_cache_behavior.value, "trusted_signers", null)
+      viewer_protocol_policy    = ordered_cache_behavior.value["viewer_protocol_policy"]
       forwarded_values {
         cookies {
-          forward                 = ordered_cache_behavior.value["forward"]
-          whitelisted_names       = lookup(ordered_cache_behavior.value, "whitelisted_names", null)
+          forward           = ordered_cache_behavior.value["forward"]
+          whitelisted_names = lookup(ordered_cache_behavior.value, "whitelisted_names", null)
         }
-        headers                   = lookup(ordered_cache_behavior.value, "headers", null)
-        query_string              = ordered_cache_behavior.value["query_string"]
-        query_string_cache_keys   = lookup(ordered_cache_behavior.value, "query_string_cache_keys", null)
+        headers                 = lookup(ordered_cache_behavior.value, "headers", null)
+        query_string            = ordered_cache_behavior.value["query_string"]
+        query_string_cache_keys = lookup(ordered_cache_behavior.value, "query_string_cache_keys", null)
       }
     }
   }
@@ -77,15 +77,16 @@ resource "aws_cloudfront_distribution" "cdf" {
       domain_name              = lookup(origin.value, "domain_name", null)
       origin_id                = lookup(origin.value, "origin_id", null)
       origin_path              = lookup(origin.value, "origin_path", null)
+      origin_access_control_id = lookup(origin.value, "origin_access_control_id", )
     }
   }
 
   dynamic "origin" {
     for_each = var.s3_origins_oai
     content {
-      domain_name              = lookup(origin.value, "domain_name", null)
-      origin_id                = lookup(origin.value, "origin_id", null)
-      origin_path              = lookup(origin.value, "origin_path", null)
+      domain_name = lookup(origin.value, "domain_name", null)
+      origin_id   = lookup(origin.value, "origin_id", null)
+      origin_path = lookup(origin.value, "origin_path", null)
 
       s3_origin_config {
         origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity[0].cloudfront_access_identity_path
@@ -96,9 +97,9 @@ resource "aws_cloudfront_distribution" "cdf" {
   dynamic "origin" {
     for_each = var.custom_origins
     content {
-      domain_name              = lookup(origin.value, "domain_name", null)
-      origin_id                = lookup(origin.value, "origin_id", null)
-      origin_path              = lookup(origin.value, "origin_path", null)
+      domain_name = lookup(origin.value, "domain_name", null)
+      origin_id   = lookup(origin.value, "origin_id", null)
+      origin_path = lookup(origin.value, "origin_path", null)
       custom_origin_config {
         http_port                = lookup(origin.value, "http_port", null)
         https_port               = lookup(origin.value, "https_port", null)
