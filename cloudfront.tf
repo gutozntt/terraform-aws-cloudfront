@@ -77,7 +77,7 @@ resource "aws_cloudfront_distribution" "cdf" {
       domain_name              = lookup(origin.value, "domain_name", null)
       origin_id                = lookup(origin.value, "origin_id", null)
       origin_path              = lookup(origin.value, "origin_path", null)
-      origin_access_control_id = lookup(origin.value, "origin_access_control_id", )
+      origin_access_control_id = lookup(origin.value, "origin_access_control_id", null)
     }
   }
 
